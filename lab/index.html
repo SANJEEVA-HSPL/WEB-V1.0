@@ -23,15 +23,45 @@ body { margin: 0; padding: 0; background-color: #f8fafc; overflow-x: hidden; }
 
 /* CM003 - Print Media Queries */
 @media print { .print-hidden { display: none !important; } @page { size: A4 portrait; margin: 0 !important; } html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; height: auto !important; overflow: visible !important; } .a4-page { width: 210mm !important; min-height: auto !important; height: auto !important; margin: 0 !important; padding: 6mm !important; border: none !important; box-shadow: none !important; overflow: visible !important; box-sizing: border-box !important; } .page-border { position: fixed !important; top: 6mm; left: 6mm; right: 6mm; bottom: 6mm; border: 1.5px solid #115e59 !important; display: block !important; z-index: 9999 !important; pointer-events: none; } .print-layout-table { width: 100%; border-collapse: collapse; z-index: 20; position: relative; } .test-card { page-break-inside: avoid; break-inside: avoid; } .direct-input { border-bottom: none !important; background: transparent !important; } }
+
+/* CM018 - Authentication Display Toggles */
+body:not(.authenticated) > section, 
+body:not(.authenticated) > main,
+body:not(.authenticated) > #toastNotification,
+body:not(.authenticated) > #confirmModal { display: none !important; }
+body.authenticated > #loginContainer { display: none !important; }
 </style>
 </head>
 <body class="min-h-screen bg-slate-50 flex flex-col text-slate-800 print:bg-white print:text-black">
+
+<!-- CM019 - Secure Login Screen -->
+<div id="loginContainer" class="flex-1 flex flex-col items-center justify-center min-h-screen bg-slate-100 z-50 fixed inset-0">
+<div class="bg-white p-8 rounded-xl shadow-2xl max-w-sm w-full mx-4 border border-teal-100">
+<div class="text-center mb-6">
+<img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" class="w-16 h-16 mx-auto mb-2" onerror="this.style.display='none'">
+<h2 class="text-lg font-extrabold text-teal-900 uppercase">Sanjeeva Lab Terminal</h2>
+<p class="text-xs text-slate-500 font-bold mt-1 tracking-wider">SECURE STAFF LOGIN</p>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block text-xs font-bold text-slate-700 mb-1">Username</label>
+<input type="text" id="loginUsername" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 font-bold text-sm text-center" placeholder="">
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+<input type="password" id="loginPassword" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 font-bold text-sm text-center" placeholder="••••" onkeypress="if(event.key === 'Enter') attemptLogin()">
+</div>
+<div id="loginError" class="text-red-500 text-xs font-bold hidden text-center bg-red-50 py-1.5 rounded border border-red-100">Invalid username or password!</div>
+<button onclick="attemptLogin()" class="w-full py-2.5 px-4 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-lg shadow-md transition-colors mt-2 text-sm">Access Terminal</button>
+</div>
+</div>
+</div>
 
 <!-- CM004 - Header Section -->
 <section class="bg-white border-b border-slate-200 p-4 print-hidden shadow-inner sticky top-0 z-40">
 <div class="max-w-7xl mx-auto space-y-3">
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-<h2 class="text-xs font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5"><i data-lucide="file-text" class="w-4 h-4 text-teal-600"></i><span>Select Lab Profile (14 Profiles) - Click to add to A4 Canvas</span></h2>
+<h2 class="text-xs font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5"><i data-lucide="file-text" class="w-4 h-4 text-teal-600"></i><span>Select Lab Profile (15 Profiles) - Click to add to A4 Canvas</span></h2>
 <div class="flex items-center space-x-3">
 <button onclick="triggerResetConfirm()" class="flex items-center space-x-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold rounded-lg border border-red-200 transition-colors"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i><span>Reset All Fields</span></button>
 <button onclick="triggerPrint()" class="flex items-center space-x-2 px-5 py-2 text-xs font-extrabold bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-lg shadow-md transition-all"><i data-lucide="printer" class="w-3.5 h-3.5"></i><span>Print Report</span></button>
@@ -125,6 +155,10 @@ body { margin: 0; padding: 0; background-color: #f8fafc; overflow-x: hidden; }
 <script>
 // CM012 - Global Variables Constants
 const TEMPLATE_TESTS = [{id:"serology",name:"Serology Report",category:"Serology",parameters:[{name:"C.R.P (C-Reactive Protein)",value:"",unit:"mg/l",normalRange:"00 - 06 mg/l",suggest:"suggest_pos_neg"},{name:"Salmonella Typhi 'O'",value:"",unit:"Titre",normalRange:"Negative (< 1:80)",suggest:"suggest_pos_neg"},{name:"Salmonella Typhi 'H'",value:"",unit:"Titre",normalRange:"Negative (< 1:80)",suggest:"suggest_pos_neg"},{name:"Salmonella Paratyphi 'AH'",value:"",unit:"Titre",normalRange:"Negative (< 1:80)",suggest:"suggest_pos_neg"},{name:"Salmonella Paratyphi 'BH'",value:"",unit:"Titre",normalRange:"Negative (< 1:80)",suggest:"suggest_pos_neg"},{name:"Dengue NS1 Antigen",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"},{name:"Dengue IgM Antibody",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"},{name:"Dengue IgG Antibody",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"},{name:"Ra Factor Test",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"},{name:"HIV Test (Method I/II)",value:"",unit:"-",normalRange:"Non - Reactive",suggest:"suggest_reactive"},{name:"H.BsAg",value:"",unit:"-",normalRange:"Non - Reactive",suggest:"suggest_reactive"},{name:"H.C.V",value:"",unit:"-",normalRange:"Non - Reactive",suggest:"suggest_reactive"},{name:"V.D.R.L",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"}]},{id:"sugar",name:"Blood Sugar Profile",category:"Biochemistry",parameters:[{name:"Random Blood Sugar",value:"",unit:"mg/dl",normalRange:"70 - 160 mg/dl"},{name:"Fasting Blood Sugar",value:"",unit:"mg/dl",normalRange:"70 - 110 mg/dl"},{name:"Post Prandial Blood Sugar",value:"",unit:"mg/dl",normalRange:"110 - 160 mg/dl"}]},{id:"hematology",name:"Hematology & Hemoglobin",category:"Hematology",parameters:[{name:"Haemoglobin (Male)",value:"",unit:"gm%",normalRange:"Male: 14 - 18 gm%"},{name:"Haemoglobin (Female)",value:"",unit:"gm%",normalRange:"Female: 12 - 18 gm%"},{name:"Blood Grouping (ABO/Rh)",value:"",unit:"-",normalRange:"A / B / O / AB Group",suggest:"suggest_blood_grp"},{name:"M.P KIT (Malaria Antigen)",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"},{name:"Bleeding Time",value:"",unit:"Min/Sec",normalRange:"2 - 5 min"},{name:"Clotting Time",value:"",unit:"Min/Sec",normalRange:"3 - 6 min"},{name:"E.S.R (Westergren Method)",value:"",unit:"mm/hr",normalRange:"10 - 20 mm/hr"}]},{id:"hepatitis",name:"Hepatitis (HAV / IgM / IgG)",category:"Serology",parameters:[{name:"HAV Antibody",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"},{name:"IgM Antibody",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"},{name:"IgG Antibody",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"}]},{id:"urine_chem",name:"Urine Chemical Examination",category:"Urine Analysis",parameters:[{name:"Urine Albumin (Protein)",value:"",unit:"-",normalRange:"Nil",suggest:"suggest_urine_alb"},{name:"Urine Sugar (Glucose)",value:"",unit:"-",normalRange:"Nil",suggest:"suggest_urine_alb"},{name:"Bile Salts",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"},{name:"Bile Pigments",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"},{name:"Urine Ketone bodies",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"},{name:"Urine Pregnancy (UPT)",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"}]},{id:"urine_micro",name:"Urine Microscopic Deposits",category:"Urine Analysis",parameters:[{name:"Pus Cells",value:"",unit:"/hpf",normalRange:"0 - 5 /hpf"},{name:"R.B Cells (Red Blood Cells)",value:"",unit:"/hpf",normalRange:"Nil"},{name:"E.P.Cells (Epithelial)",value:"",unit:"/hpf",normalRange:"1 - 5 /hpf"},{name:"Urine Casts",value:"",unit:"-",normalRange:"Nil"},{name:"Urine Crystals",value:"",unit:"-",normalRange:"Nil"},{name:"Others / Yeast / Organisms",value:"",unit:"-",normalRange:"Nil"}]},{id:"bilirubin",name:"Bilirubin Panel",category:"Biochemistry",parameters:[{name:"Total Bilirubin",value:"",unit:"mg/dl",normalRange:"0.2 - 1.0 mg/dl"},{name:"Direct Bilirubin",value:"",unit:"mg/dl",normalRange:"0.0 - 0.4 mg/dl"},{name:"Indirect Bilirubin",value:"",unit:"mg/dl",normalRange:"0.2 - 0.8 mg/dl"}]},{id:"lft",name:"Liver Function Test (LFT)",category:"Biochemistry",parameters:[{name:"Total Bilirubin",value:"",unit:"mg/dl",normalRange:"0.2 - 1.0 mg/dl"},{name:"Direct Bilirubin",value:"",unit:"mg/dl",normalRange:"0.0 - 0.4 mg/dl"},{name:"Indirect Bilirubin",value:"",unit:"mg/dl",normalRange:"0.2 - 0.8 mg/dl"},{name:"Alkaline Phosphatase (ALP)",value:"",unit:"U/L",normalRange:"25 - 360 U/L"},{name:"SGOT (AST)",value:"",unit:"IU/ml",normalRange:"8 - 40 IU/ml"},{name:"SGPT (ALT)",value:"",unit:"IU/ml",normalRange:"5 - 40 IU/ml"},{name:"Total Proteins",value:"",unit:"gm/dl",normalRange:"6.4 - 8.4 gm/dl"},{name:"Albumin",value:"",unit:"mg/dl",normalRange:"3.2 - 5.5 mg/dl"}]},{id:"rft",name:"Renal Profile / Kidney Test",category:"Biochemistry",parameters:[{name:"Blood Urea",value:"",unit:"mg/dl",normalRange:"20 - 40 mg/dl"},{name:"Serum Creatinine",value:"",unit:"mg/dl",normalRange:"0.7 - 1.4 mg/dl"},{name:"Serum Uric Acid (Male)",value:"",unit:"mg/dl",normalRange:"4.0 - 8.5 mg/dl"},{name:"Serum Uric Acid (Female)",value:"",unit:"mg/dl",normalRange:"2.5 - 6.8 mg/dl"},{name:"Serum Calcium",value:"",unit:"mg/dl",normalRange:"8.5 - 10.0 mg/dl"}]},{id:"electrolytes",name:"Serum Electrolytes",category:"Biochemistry",parameters:[{name:"Sodium (Na+)",value:"",unit:"m.mole/lit",normalRange:"135 - 155 m.mole/lit"},{name:"Potassium (K+)",value:"",unit:"m.moles/lit",normalRange:"3.5 - 5.5 m.moles/lit"},{name:"Chloride (Cl-)",value:"",unit:"m.moles/lit",normalRange:"90 - 110 m.moles/lit"}]},{id:"troponin",name:"Troponin - I Card Test",category:"Biochemistry",parameters:[{name:"Troponin - I",value:"",unit:"-",normalRange:"Negative",suggest:"suggest_pos_neg"}]},{id:"thyroid",name:"Thyroid Profile (T3, T4, TSH)",category:"Hormones",parameters:[{name:"T3 (Method: FIA)",value:"",unit:"mg/ML",normalRange:"0.5 - 1.8 mg/ML"},{name:"T4 (Method: FIA) Male",value:"",unit:"mg/DL",normalRange:"4.4 - 10.8 mg/DL"},{name:"T4 (Method: FIA) Female",value:"",unit:"mg/DL",normalRange:"4.8 - 11.6 mg/DL"},{name:"TSH (Method: FIA)",value:"",unit:"MIU/ML",normalRange:"0.5 - 5.5 MIU/ML"}]},{id:"hba1c",name:"HbA1c Test (Glycated)",category:"Biochemistry",parameters:[{name:"HbA1c Value",value:"",unit:"%",normalRange:"Normal: 4.5-6.5% | Good: <7%"}]},{id:"custom",name:"Custom General Profile",category:"General",parameters:[{name:"Custom Parameter",value:"",unit:"-",normalRange:"Normal",suggest:"suggest_pos_neg"}]}];
+
+// Add Complete Blood Picture (CBP) to the top of the templates list
+TEMPLATE_TESTS.unshift({id:"cbp",name:"Complete Blood Picture (CBP)",category:"Hematology",parameters:[{name:"Haemoglobin (Male)",value:"",unit:"gm%",normalRange:"14 - 18 gm%"},{name:"Haemoglobin (Female)",value:"",unit:"gm%",normalRange:"12 - 16 gm%"},{name:"Total W.B.C Count",value:"",unit:"cells/cumm",normalRange:"4000 - 11000 cells/cumm"},{name:"Total R.B.C Count",value:"",unit:"mill/cumm",normalRange:"4.5 - 5.5 mill/cumm"},{name:"Platelet Count",value:"",unit:"lakhs/cumm",normalRange:"1.5 - 4.5 lakhs/cumm"},{name:"Neutrophils",value:"",unit:"%",normalRange:"40 - 80%"},{name:"Lymphocytes",value:"",unit:"%",normalRange:"20 - 40%"},{name:"Monocytes",value:"",unit:"%",normalRange:"2 - 10%"},{name:"Eosinophils",value:"",unit:"%",normalRange:"1 - 6%"},{name:"Basophils",value:"",unit:"%",normalRange:"0 - 2%"},{name:"Haematocrit (PCV)",value:"",unit:"%",normalRange:"37.0 - 45.0%"},{name:"MCV",value:"",unit:"fl",normalRange:"77 - 91 fl"},{name:"MCH",value:"",unit:"pg",normalRange:"24 - 30 pg"},{name:"MCHC",value:"",unit:"%",normalRange:"30 - 35%"}]});
+
 let defaultDoctor = 'Dr. R. Anjaneyulu MBBS MD (PAED) BCH';
 let patientDetails = JSON.parse(localStorage.getItem('sanjeeva_patient_details')) || { patientId: createRegistrationCode(), name: '', age: '', gender: 'Male', referredBy: defaultDoctor, date: new Date().toISOString().split('T')[0], phone: '' };
 let activeTests = JSON.parse(localStorage.getItem('sanjeeva_active_tests')) || [];
@@ -152,9 +186,31 @@ function drawActiveTests() { const grid = document.getElementById('selectedTests
 function updatePatientFormUI() { document.getElementById('p_name').value = patientDetails.name; document.getElementById('p_age').value = patientDetails.age; document.getElementById('p_gender').value = patientDetails.gender; document.getElementById('p_referredBy').value = patientDetails.referredBy; document.getElementById('p_id').value = patientDetails.patientId; document.getElementById('p_date').value = patientDetails.date; document.getElementById('p_phone').value = patientDetails.phone; }
 function drawAll() { drawSelectionGrid(); drawActiveTests(); updatePatientFormUI(); }
 
+// CM020 - Authentication Logic
+function attemptLogin() {
+    const user = document.getElementById('loginUsername').value;
+    const pass = document.getElementById('loginPassword').value;
+    const err = document.getElementById('loginError');
+    if (user === 'SM01' && pass === '1111') {
+        sessionStorage.setItem('sanjeeva_auth', 'true');
+        err.classList.add('hidden');
+        checkAuth();
+    } else {
+        err.classList.remove('hidden');
+    }
+}
+
+function checkAuth() {
+    if (sessionStorage.getItem('sanjeeva_auth') === 'true') {
+        document.body.classList.add('authenticated');
+    } else {
+        document.body.classList.remove('authenticated');
+    }
+}
+
 // CM017 - Event Listeners
 document.addEventListener('keydown', function(e) { if (e.key === 'Enter' && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) { e.preventDefault(); const inputs = Array.from(document.querySelectorAll('.direct-input, input, select')); const index = inputs.indexOf(e.target); if (index > -1 && index + 1 < inputs.length) { inputs[index + 1].focus(); if (typeof inputs[index + 1].select === 'function') { inputs[index + 1].select(); } } } });
-window.onload = function() { drawAll(); lucide.createIcons(); };
+window.onload = function() { checkAuth(); drawAll(); lucide.createIcons(); };
 </script>
 </body>
 </html>
