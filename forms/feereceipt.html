@@ -9,23 +9,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-body { font-family: 'Roboto Slab', serif; background-color: #f1f5f9; padding: 10px 10px; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; }
+/* CM001 - CSS Base Styles */
+body { font-family: 'Roboto Slab', serif; background-color: #f1f5f9; padding: 4mm; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; box-sizing: border-box; }
 
-/* CM001 - CSS Control Panel */
-.controls-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 1000; width: 100%; max-width: 600px; margin: 5px auto 5px auto; }
+/* CM002 - CSS Control Panel */
+.controls-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 1000; width: 100%; max-width: 600px; margin: 0 auto 5px auto; }
 .btn { padding: 5px 14px; background-color: #1e3a8a; color: white; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
 .search-box { background: linear-gradient(135deg,#e0e7ff,#c7d2fe); border: 2px solid #1e3a8a; padding: 2px 10px; border-radius: 6px; display: flex; align-items: center; gap: 6px; font-weight: 800; color: #1e3a8a; box-shadow: 0 4px 6px rgba(0,0,0,0.1); height: 32px; }
 .search-box input { border: 1px solid #1e3a8a; outline: none; padding: 2px 8px; height: 22px; border-radius: 4px; font-weight: 700; background: #ffffff; width: 200px; font-size: 11px; }
 
-/* CM002 - CSS Receipt Slip Layout */
-.receipt-slip-segment { width: 210mm; height: 74mm; border: 2px dashed #1e3a8a; border-radius: 8px; padding: 3mm 5mm; position: relative; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; background-color: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,.1); margin-top: 5px; overflow: hidden; }
+/* CM003 - CSS Receipt Slip Layout */
+.receipt-slip-segment { width: 100%; max-width: 210mm; height: 74mm; border: 2px dashed #1e3a8a; border-radius: 8px; padding: 3mm 5mm; position: relative; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; background-color: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,.1); margin-top: 5px; overflow: hidden; }
 .watermark-bg { position: absolute; top: 52%; left: 50%; transform: translate(-50%,-50%); width: 140px; height: 140px; object-fit: contain; opacity: .04; z-index: 0; pointer-events: none; }
 .slip-header { display: flex; align-items: center; justify-content: justify-between; border-bottom: 2px solid #1e3a8a; padding-bottom: 2px; margin-bottom: 3px; z-index: 10; }
 .slip-logo { height: 28px; width: 38px; object-fit: contain; }
 .slip-title-container { display: flex; align-items: center; gap: 8px; flex-grow: 1; margin-left: 8px; }
 .slip-hospital-name { font-size: 0.95rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; line-height: 1; letter-spacing: 0.01em; white-space: nowrap; }
 
-/* CM003 - CSS Typography and Fields */
+/* CM004 - CSS Typography and Fields */
 .receipt-headline { font-size: 0.85rem; font-weight: 800; color: #1e3a8a; text-decoration: underline; text-transform: uppercase; letter-spacing: 0.08em; text-align: center; margin-top: 1px; margin-bottom: 1px; z-index: 10; }
 .receipt-paragraph { font-size: 0.65rem; line-height: 1.8; color: #1e293b; text-align: justify; font-weight: 700; text-transform: uppercase; z-index: 10; margin-bottom: 2px; }
 .line-input { border: none; border-bottom: 1.5px dotted #1e3a8a; outline: none; padding: 0 4px; font-weight: 800; color: #b91c1c; text-align: center; background: transparent; font-size: 0.7rem; display: inline-block; vertical-align: bottom; }
@@ -35,23 +36,22 @@ body { font-family: 'Roboto Slab', serif; background-color: #f1f5f9; padding: 10
 .date-display-field { border-bottom: 1.5px dotted #1e3a8a; padding: 0 4px; font-weight: 800; color: #b91c1c; font-size: 0.68rem; text-align: center; min-width: 80px; }
 .calendar-icon-btn { color: #1e3a8a; margin-left: 3px; font-size: 0.75rem; cursor: pointer; }
 
-/* CM004 - CSS Popup Modals */
+/* CM005 - CSS Popup Modals */
 .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; }
 .modal-content { background: #ffffff; padding: 20px; border-radius: 12px; text-align: center; min-width: 300px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
 
-/* CM005 - CSS Print Media Engine */
-@page { size: A4 portrait; margin: 10mm; }
+/* CM006 - CSS Print Media Engine */
+@page { size: A4 portrait; margin: 4mm; }
 @media print {
-body { margin: 0 !important; padding: 0 !important; background: #ffffff !important; }
+body { margin: 0 !important; padding: 4mm !important; background: #ffffff !important; align-items: flex-start; }
 .controls-wrapper, .calendar-icon-btn, .date-picker-hidden { display: none !important; }
-.receipt-slip-segment { width: 190mm !important; height: 74mm !important; border: 2px dashed #1e3a8a !important; box-shadow: none !important; margin: 0 auto !important; }
+.receipt-slip-segment { width: 100% !important; max-width: 210mm !important; height: 74mm !important; border: 2px dashed #1e3a8a !important; box-shadow: none !important; margin: 0 !important; }
 }
 </style>
 </head>
 <body>
 
-<!-- CM006 - HTML Controls -->
-<div class="controls-wrapper">
+<!-- CM007 - HTML Controls -->
 <div class="flex gap-3">
 <button class="btn bg-rose-600 hover:bg-rose-700 transition" onclick="confirmReset()"><i class="fa-solid fa-trash-can"></i> RESET</button>
 <button class="btn btn-save bg-emerald-600 hover:bg-emerald-700 transition" id="commitBtn_9381" onclick="handleSaveOrUpdate_7182()"><i class="fa-solid fa-cloud-arrow-up" id="saveIcon"></i> <span id="btnText_992">SAVE</span></button>
