@@ -89,7 +89,7 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
 <script>
 
 // CM011 - Application State & Data Setup
-const defaultFormsData = [{id:"form_1",file:"https://sh-alg.github.io/WEB-V1.0/forms/deliverycertificate.html",name:"Delivery Certificate"},{id:"form_2",file:"https://sh-alg.github.io/WEB-V1.0/forms/dischargesummary.html",name:"Discharge Summary"},{id:"form_3",file:"https://sh-alg.github.io/WEB-V1.0/forms/feereceipt.html",name:"Fee Receipt"},{id:"form_4",file:"https://sh-alg.github.io/WEB-V1.0/forms/ipbill.HTML",name:"IP Bill"},{id:"form_7",file:"https://sh-alg.github.io/WEB-V1.0/forms/medicinebill.html",name:"Medicine Bill"},{id:"form_8",file:"https://sh-alg.github.io/WEB-V1.0/forms/ob1report.html",name:"OB1 Report"},{id:"form_9",file:"https://sh-alg.github.io/WEB-V1.0/forms/ob2report.html",name:"OB2 Report"},{id:"form_10",file:"https://sh-alg.github.io/WEB-V1.0/forms/obreport.html",name:"OB Report"},{id:"form_11",file:"https://sh-alg.github.io/WEB-V1.0/forms/sterilaizationcertificate.html",name:"Sterilization Certificate"}];
+const defaultFormsData = [{id:"form_1",file:"https://sh-alg.github.io/WEB-V1.0/forms/deliverycertificate.html",name:"Delivery Certificate"},{id:"form_2",file:"https://sh-alg.github.io/WEB-V1.0/forms/dischargesummary.html",name:"Discharge Summary"},{id:"form_3",file:"https://sh-alg.github.io/WEB-V1.0/forms/feereceipt.html",name:"Fee Receipt"},{id:"form_4",file:"https://sh-alg.github.io/WEB-V1.0/forms/ipbill.HTML",name:"IP Bill"},{id:"form_7",file:"https://sh-alg.github.io/WEB-V1.0/forms/medicinebill.html",name:"Medicine Bill"},{id:"form_7",file:"https://sh-alg.github.io/WEB-V1.0/forms/medicallongbill.html",name:"Medicine Long Bill"},{id:"form_8",file:"https://sh-alg.github.io/WEB-V1.0/forms/ob1report.html",name:"OB1 Report"},{id:"form_9",file:"https://sh-alg.github.io/WEB-V1.0/forms/ob2report.html",name:"OB2 Report"},{id:"form_10",file:"https://sh-alg.github.io/WEB-V1.0/forms/obreport.html",name:"OB Report"},{id:"form_11",file:"https://sh-alg.github.io/WEB-V1.0/forms/sterilaizationcertificate.html",name:"Sterilization Certificate"}];
 let activeFormId = null;
 
 // CM012 - Cached DOM References
@@ -117,6 +117,8 @@ function handleEnter(e) { if (e.key === 'Enter') { handleLogin(); } }
 
 // CM014 - Dropdown Rendering Logic
 function renderDropdown() { formDropdown.innerHTML = ''; defaultFormsData.forEach(form => { const option = document.createElement('option'); option.value = form.id; option.textContent = form.name; option.dataset.file = form.file; formDropdown.appendChild(option); }); }
+
+
 
 // CM015 - Iframe Loader Logic
 function loadForm(id) { const form = defaultFormsData.find(f => f.id === id); if(!form) return; activeFormId = id; formDropdown.value = id; iframeLoader.classList.remove('hidden'); formViewer.src = form.file; formViewer.onload = () => { iframeLoader.classList.add('hidden'); }; formViewer.onerror = () => { iframeLoader.classList.add('hidden'); }; saveLastOpened(id); }
