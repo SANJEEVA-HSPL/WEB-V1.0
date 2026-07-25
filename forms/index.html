@@ -79,9 +79,10 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
 <!-- CM010 - Main Layout Wrapper -->
 <main class="main-container">
 <section class="content-area">
-<div class="iframe-container">
+<div class="iframe-container" id="viewContainer">
 <div class="loader-overlay" id="iframeLoader"><div class="spinner"></div><div class="loader-text">Loading Form...</div></div>
 <iframe id="formViewer" src="about:blank" title="Form Viewer"></iframe>
+
 </div>
 </section>
 </main>
@@ -89,15 +90,31 @@ iframe { width: 100%; height: 100%; border: none; display: block; }
 <script>
 
 // CM011 - Application State & Data Setup
-const defaultFormsData = [{id:"form_1",file:"https://sh-alg.github.io/WEB-V1.0/forms/deliverycertificate.html",name:"Delivery Certificate"},{id:"form_2",file:"https://sh-alg.github.io/WEB-V1.0/forms/dischargesummary.html",name:"Discharge Summary"},{id:"form_3",file:"https://sh-alg.github.io/WEB-V1.0/forms/feereceipt.html",name:"Fee Receipt"},{id:"form_4",file:"https://sh-alg.github.io/WEB-V1.0/forms/ipbill.HTML",name:"IP Bill"},{id:"form_7",file:"https://sh-alg.github.io/WEB-V1.0/forms/medicinebill.html",name:"Medicine Bill"},{id:"form_7",file:"https://sh-alg.github.io/WEB-V1.0/forms/medicallongbill.html",name:"Medicine Long Bill"},{id:"form_8",file:"https://sh-alg.github.io/WEB-V1.0/forms/ob1report.html",name:"OB1 Report"},{id:"form_9",file:"https://sh-alg.github.io/WEB-V1.0/forms/ob2report.html",name:"OB2 Report"},{id:"form_10",file:"https://sh-alg.github.io/WEB-V1.0/forms/obreport.html",name:"OB Report"},{id:"form_11",file:"https://sh-alg.github.io/WEB-V1.0/forms/sterilaizationcertificate.html",name:"Sterilization Certificate"}];
+const defaultFormsData = [
+    {id:"form_1",file:"https://sh-alg.github.io/WEB-V1.0/forms/deliverycertificate.html",name:"Delivery Certificate"},
+    {id:"form_2",file:"https://sh-alg.github.io/WEB-V1.0/forms/dischargesummary.html",name:"Discharge Summary"},
+    {id:"form_3",file:"https://sh-alg.github.io/WEB-V1.0/forms/feereceipt.html",name:"Fee Receipt"},
+    {id:"form_4",file:"https://sh-alg.github.io/WEB-V1.0/forms/ipbill.HTML",name:"IP Bill"},
+    {id:"form_5",file:"https://sh-alg.github.io/WEB-V1.0/forms/medicinebill.html",name:"Medicine Bill"},
+    {id:"form_7",file:"https://sh-alg.github.io/WEB-V1.0/forms/medicallongbill.html",name:"Medicine Long Bill"},
+    {id:"form_8",file:"https://sh-alg.github.io/WEB-V1.0/forms/ob1report.html",name:"OB1 Report"},
+    {id:"form_9",file:"https://sh-alg.github.io/WEB-V1.0/forms/ob2report.html",name:"OB2 Report"},
+    {id:"form_10",file:"https://sh-alg.github.io/WEB-V1.0/forms/obreport.html",name:"OB Report"},
+    {id:"form_11",file:"https://sh-alg.github.io/WEB-V1.0/forms/sterilaizationcertificate.html",name:"Sterilization Certificate"}
+];
 let activeFormId = null;
 
 // CM012 - Cached DOM References
-const formDropdown = document.getElementById('formDropdown'); const formViewer = document.getElementById('formViewer'); const iframeLoader = document.getElementById('iframeLoader');
-const loginOverlay = document.getElementById('loginOverlay'); const usernameInput = document.getElementById('usernameInput'); const passwordInput = document.getElementById('passwordInput'); const loginError = document.getElementById('loginError');
+const formDropdown = document.getElementById('formDropdown'); 
+const formViewer = document.getElementById('formViewer'); 
+const iframeLoader = document.getElementById('iframeLoader');
+const loginOverlay = document.getElementById('loginOverlay'); 
+const usernameInput = document.getElementById('usernameInput'); 
+const passwordInput = document.getElementById('passwordInput'); 
+const loginError = document.getElementById('loginError');
 
 // CM013 - App Initialization Method
-function initApp() { checkSession(); renderDropdown(); restoreLastOpened(); setupEvents(); }
+function initApp() { checkSession(); renderDropdown(); loadForm('form_1'); setupEvents(); }
 
 // CM021 - Login Logic
 function checkSession() { if (sessionStorage.getItem('isLoggedIn') === 'true') { loginOverlay.style.display = 'none'; } }
@@ -118,17 +135,23 @@ function handleEnter(e) { if (e.key === 'Enter') { handleLogin(); } }
 // CM014 - Dropdown Rendering Logic
 function renderDropdown() { formDropdown.innerHTML = ''; defaultFormsData.forEach(form => { const option = document.createElement('option'); option.value = form.id; option.textContent = form.name; option.dataset.file = form.file; formDropdown.appendChild(option); }); }
 
-
-
-// CM015 - Iframe Loader Logic
-function loadForm(id) { const form = defaultFormsData.find(f => f.id === id); if(!form) return; activeFormId = id; formDropdown.value = id; iframeLoader.classList.remove('hidden'); formViewer.src = form.file; formViewer.onload = () => { iframeLoader.classList.add('hidden'); }; formViewer.onerror = () => { iframeLoader.classList.add('hidden'); }; saveLastOpened(id); }
+// CM015 - Loader and View Logic
+function loadForm(id) { 
+    const form = defaultFormsData.find(f => f.id === id); 
+    if(!form) return; 
+    
+    activeFormId = id; 
+    formDropdown.value = id; 
+    
+    formViewer.style.display = 'block';
+    iframeLoader.classList.remove('hidden'); 
+    formViewer.src = form.file; 
+    formViewer.onload = () => { iframeLoader.classList.add('hidden'); }; 
+    formViewer.onerror = () => { iframeLoader.classList.add('hidden'); }; 
+}
 
 // CM016 - Event Listeners
 function setupEvents() { formDropdown.addEventListener('change', (e) => { loadForm(e.target.value); }); }
-
-// CM017 - Local Storage Handlers
-function saveLastOpened(id) { localStorage.setItem('hospitalFormsLastOpened_Dropdown', id); }
-function restoreLastOpened() { const lastId = localStorage.getItem('hospitalFormsLastOpened_Dropdown'); const target = defaultFormsData.find(f => f.id === lastId) || defaultFormsData[0]; if(target) { loadForm(target.id); } }
 
 // CM018 - DOM Load Trigger
 document.addEventListener('DOMContentLoaded', initApp);
