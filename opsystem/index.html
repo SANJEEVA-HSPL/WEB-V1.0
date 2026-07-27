@@ -156,10 +156,10 @@ function printOPTicket(pid, vitals = {}) {
     const pDate = new Date(p.date); 
     const wDay = isNaN(pDate.getTime()) ? '' : days[pDate.getDay()]; 
     
-    let dName = "డా|| ఆర్. అంజనేయులు", dDeg = "M.B.B.S., M.D. (Paed)", dSpec = "పిల్లల మరియు పురిటి పిల్లల వైద్య నిపుణులు", dReg = "Regd No. 54702"; 
+    let dName = "డా|| ఆర్. ఆంజనేయులు ", dDeg = "M.B.B.S., M.D. (Paed)", dSpec = "పిల్లల మరియు పురిటి పిల్లల వైద్య నిపుణులు", dReg = "Regd No. 54702"; 
     
     if (p.consultant.includes("Sujata")) { 
-        dName = "డా|| ఇ. సుజాత అంజనేయులు"; dDeg = "M.B.B.S., M.S. (OBG)"; dSpec = "స్త్రీ మరియు ప్రసూతి వ్యాధి నిపుణులు"; dReg = "Regd No. 62254"; 
+        dName = "డా|| ఇ. సుజాత ఆంజనేయులు"; dDeg = "M.B.B.S., M.S. (OBG)"; dSpec = "స్త్రీ మరియు ప్రసూతి వ్యాధి నిపుణులు"; dReg = "Regd No. 62254"; 
     } else if (p.consultant.includes("Chandrasekhar")) { 
         dName = "డా|| ఎ. చంద్రశేఖర్ రెడ్డి"; dDeg = "M.S. (ENT)"; dSpec = "చెవి, ముక్కు, గొంతు వైద్యులు"; dReg = "Cell: 7013738036"; 
     } else if (p.consultant.includes("Chanti Babu")) { 
